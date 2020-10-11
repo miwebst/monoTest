@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - testing
-  pull_request_review_comment:
-    types: [created, deleted]
+  pull_request:
+    types: [opened, synchronize, reopened, closed, labeled]
+    branches:
+      - testing
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '[azure-deploy-to]'))
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
